@@ -16,7 +16,7 @@
 # MyRequiem Fork:
 ###
 # https://github.com/MyRequiem/imgur-screenshot
-#    $ git@github.com:MyRequiem/imgur-screenshot.git
+#    $ git clone git@github.com:MyRequiem/imgur-screenshot.git
 #    $ cd imgur-screenshot
 #    $ git checkout min_edition
 
