@@ -34,7 +34,7 @@
 #    9. jq
 
 initialize() {
-    declare -g -r CURRENT_VERSION="2.0.0"
+    declare -g -r CURRENT_VERSION="2.0.1"
     declare -r    CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
     if [ -f "${CONFIG_HOME}/user-dirs.dirs" ]; then
@@ -101,6 +101,8 @@ Config: ${SETTINGS_PATH}
 -n, --noupload               do not upload the image to imgur, just take a
                                 screenshot
 -r, --clear                  clear directory where you want your images saved
+--timeout=N                  delay (in seconds) before taking a screenshot
+                                (only for maim, not scrot)
 file                         upload file instead of taking a screenshot
 EOF
                 exit 0;;
@@ -129,6 +131,18 @@ EOF
                 shift 1;;
             -r | --clear)
                 CLEAR_FILE_DIR="true"
+                shift 1;;
+            --timeout=*)
+                if [[ ${SCREENSHOT_COMMAND} =~ maim ]]; then
+                    SEC="$(echo "${1}" | cut -d = -f 2)"
+                    SCREENSHOT_COMMAND="${SCREENSHOT_COMMAND} --delay=${SEC}"
+                    unset SEC
+                else
+                    echo -n "To use a timeout, use utility 'maim' instead of "
+                    echo -en "'scrot'\nSee SCREENSHOT_COMMAND variable in "
+                    echo "${SETTINGS_PATH}"
+                    exit 1
+                fi
                 shift 1;;
             *)
                 UPLOAD_FILES=("${@}")
@@ -222,7 +236,7 @@ handle_file() {
         # take screenshot
         cd "${FILE_DIR}" || exit 1
 
-        [[ ${CLEAR_FILE_DIR} == "true" ]] && rm -f *.png
+        [[ ${CLEAR_FILE_DIR} == "true" ]] && rm -f ./*.png
 
         # new filename with date
         img_file="$(date +"${FILE_NAME_FORMAT}")"
@@ -350,7 +364,7 @@ handle_upload_error() {
     echo "${error}"
     {
         echo -en "[$(date +"%d.%m.%y %H:%M:%S")]\n\t"
-        echo "Upload error: ${2}\n\t${error}"
+        echo -e "Upload error: ${2}\n\t${error}"
     } >> "${LOG_FILE}"
 }
 
