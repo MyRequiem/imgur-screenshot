@@ -236,7 +236,7 @@ handle_file() {
         # take screenshot
         cd "${FILE_DIR}" || exit 1
 
-        [[ ${CLEAR_FILE_DIR} == "true" ]] && rm -f ./*.png
+        [[ ${CLEAR_FILE_DIR} == "true" ]] && rm -f ./screenshot_*.png
 
         # new filename with date
         img_file="$(date +"${FILE_NAME_FORMAT}")"
