@@ -236,7 +236,10 @@ handle_file() {
         # take screenshot
         cd "${FILE_DIR}" || exit 1
 
-        [[ ${CLEAR_FILE_DIR} == "true" ]] && rm -f ./screenshot_*.png
+        if [[ ${CLEAR_FILE_DIR} == "true" ]]; then
+            mkdir -p _removed
+            find . -type f -maxdepth 1 -exec mv {} _removed/ \;
+        fi
 
         # new filename with date
         img_file="$(date +"${FILE_NAME_FORMAT}")"
