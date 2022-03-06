@@ -237,8 +237,8 @@ handle_file() {
         cd "${FILE_DIR}" || exit 1
 
         if [[ ${CLEAR_FILE_DIR} == "true" ]]; then
-            mkdir -p _removed
-            find . -type f -maxdepth 1 -exec mv {} _removed/ \;
+            mkdir -p .removed
+            find . -type f -maxdepth 1 -exec mv {} .removed/ \;
         fi
 
         # new filename with date
