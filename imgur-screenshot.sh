@@ -33,6 +33,7 @@
 #    8. oniguruma
 #    9. jq
 #    10. zenity
+#    11. flameshot
 
 initialize() {
     declare -g -r CURRENT_VERSION="2.0.1"
@@ -56,6 +57,7 @@ initialize() {
 }
 
 load_default_config() {
+    declare -g UPLOAD_TOOL="curl"
     declare -g CLIENT_ID="ea6c0ef2987808e"
     declare -g FILE_DIR="${XDG_PICTURES_DIR:-$HOME/Pictures}"
     declare -g FILE_NAME_FORMAT="imgur-%Y_%m_%d-%H:%M:%S.png"
@@ -154,8 +156,8 @@ EOF
 
 check_config() {
     local vars
-    vars=(CLIENT_ID FILE_DIR FILE_NAME_FORMAT UPLOAD_CONNECT_TIMEOUT)
-    vars+=(UPLOAD_TIMEOUT UPLOAD_RETRIES LOG_FILE)
+    vars=(UPLOAD_TOOL CLIENT_ID FILE_DIR FILE_NAME_FORMAT)
+    vars+=(UPLOAD_CONNECT_TIMEOUT UPLOAD_TIMEOUT UPLOAD_RETRIES LOG_FILE)
 
     for var in "${vars[@]}"; do
         if [ -z "${!var}" ]; then
@@ -240,6 +242,12 @@ handle_file() {
         if [[ ${CLEAR_FILE_DIR} == "true" ]]; then
             mkdir -p .removed
             find . -type f -maxdepth 1 -exec mv {} .removed/ \;
+        fi
+
+        if [[ "${NOUPLOAD}" == "false" && \
+            "${UPLOAD_TOOL}" != "curl" ]]; then
+            "${UPLOAD_TOOL}" gui
+            return
         fi
 
         # new filename with date
