@@ -32,6 +32,7 @@
 #    7. xclip
 #    8. oniguruma
 #    9. jq
+#    10. zenity
 
 initialize() {
     declare -g -r CURRENT_VERSION="2.0.1"
@@ -334,6 +335,18 @@ upload_image() {
     fi
 }
 
+show_upload_result_message() {
+    TITLE="Imgur Screenshot"
+    if [ $1 -eq 0 ]; then
+        MESS="Screenshot uploaded successfully. \
+Link copied to clipboard. \n${2}"
+        zenity --info --title="${TITLE}" --text="${MESS}"
+    else
+        MESS="Screenshot uploading ERROR!!!"
+        zenity --error --title="${TITLE}" --text="${MESS}"
+    fi
+}
+
 handle_upload_success() {
     local open_cmd
 
@@ -358,6 +371,8 @@ handle_upload_success() {
         echo "Opening '${open_cmd}'"
         eval "${open_cmd}"
     fi
+
+    show_upload_result_message 0 "${1}"
 }
 
 handle_upload_error() {
@@ -369,6 +384,8 @@ handle_upload_error() {
         echo -en "[$(date +"%d.%m.%y %H:%M:%S")]\n\t"
         echo -e "Upload error: ${2}\n\t${error}"
     } >> "${LOG_FILE}"
+
+    show_upload_result_message 1
 }
 
 initialize
