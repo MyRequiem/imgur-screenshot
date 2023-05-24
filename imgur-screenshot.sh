@@ -47,7 +47,7 @@ initialize() {
 
 load_default_config() {
     declare -g UPLOAD_TOOL="curl"
-    declare -g IMGBB_API_KEY="1b057e44042e69a13913a9e5d7cac0c3"
+    declare -g IMGBB_API_KEY="fc66ee854276e589f5827656a0753b63"
     declare -g CLIENT_ID="ea6c0ef2987808e"
     declare -g FILE_DIR="${HOME}/tmp/_screenshots"
     declare -g FILE_NAME_FORMAT="imgur-%Y_%m_%d-%H:%M:%S.png"
