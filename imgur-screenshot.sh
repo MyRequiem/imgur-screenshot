@@ -209,7 +209,7 @@ upload_image() {
             img_link="$(jq -r .data.link <<< "${response}" | cut -d / -f 3-)"
             img_link="https://${img_link}"
         fi
-# echo $img_link; exit
+
         handle_upload_success "${img_link}"
     else # upload failed
         err_msg="$(jq .error <<<"${response}" 2>/dev/null)"
