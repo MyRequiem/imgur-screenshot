@@ -239,7 +239,7 @@ handle_upload_success() {
     echo "Image  link: ${1}"
 
     if [[ "${COPY_URL}" = "true" ]]; then
-        echo -n "${1}" | eval "${CLIPBOARD_COMMAND}"
+        echo "${1}" | eval "${CLIPBOARD_COMMAND}"
         echo "URL copied to clipboard"
     fi
 
