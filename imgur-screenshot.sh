@@ -116,14 +116,15 @@ main() {
 }
 
 take_screenshot() {
-    echo -e  "Please select area ...\n"
+    echo -e  "Please select area ..."
     # https://bbs.archlinux.org/viewtopic.php?pid=1246173#p1246173
     sleep 0.2
 
     local cmd
     cmd="SCREENSHOT_COMMAND"
     cmd=${!cmd//\%img/${1}}
-    "$(${cmd} &>/dev/null)"
+    # "$(${cmd} &>/dev/null)"
+    eval "${cmd}" &>/dev/null
 }
 
 handle_file() {
@@ -166,8 +167,6 @@ handle_file() {
     if [[ "${NOUPLOAD}" == "false" ]]; then
         upload_image "${img_file}"
     fi
-
-    echo ""
 }
 
 upload_image() {
@@ -235,7 +234,6 @@ Link copied to clipboard. \n${2}"
 handle_upload_success() {
     local open_cmd
 
-    echo ""
     echo "Image  link: ${1}"
 
     if [[ "${COPY_URL}" = "true" ]]; then
