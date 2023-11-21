@@ -136,7 +136,17 @@ handle_file() {
 
         if [[ ${CLEAR_FILE_DIR} == "true" ]]; then
             mkdir -p .removed
-            find . -type f -maxdepth 1 -exec mv {} .removed/ \;
+            UNDO_LAST_DELETION=".undo_last_deletion.sh"
+            cat << EOF > "${UNDO_LAST_DELETION}"
+#! /bin/bash
+
+EOF
+            IMGS="$(find . -type f -name "*.png" -maxdepth 1 | cut -d / -f 2)"
+            for IMG in ${IMGS}; do
+                echo "mv .removed/${IMG} ." >> "${UNDO_LAST_DELETION}"
+                mv "./${IMG}" .removed/
+            done
+            chmod 755 "${UNDO_LAST_DELETION}"
         fi
 
         if [[ "${NOUPLOAD}" == "false" && \
@@ -213,14 +223,13 @@ upload_image() {
     else # upload failed
         err_msg="$(jq .error <<<"${response}" 2>/dev/null)"
         [ -z "${err_msg}" ] && err_msg="${response}"
-        handle_upload_error \
-            "${err_msg}"    \
-            "${1}"
+        show_upload_result_message 1
     fi
 }
 
 show_upload_result_message() {
     TITLE="Imgur Screenshot"
+    # shellcheck disable=SC2086
     if [ $1 -eq 0 ]; then
         MESS="Screenshot uploaded successfully. \
 Link copied to clipboard. \n${2}"
@@ -232,8 +241,6 @@ Link copied to clipboard. \n${2}"
 }
 
 handle_upload_success() {
-    local open_cmd
-
     echo "Image  link: ${1}"
 
     if [[ "${COPY_URL}" = "true" ]]; then
@@ -242,12 +249,6 @@ handle_upload_success() {
     fi
 
     show_upload_result_message 0 "${1}"
-}
-
-handle_upload_error() {
-    local error
-    error="Upload failed: \"${1}\""
-    show_upload_result_message 1
 }
 
 initialize
