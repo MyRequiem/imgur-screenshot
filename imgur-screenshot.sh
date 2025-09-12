@@ -42,7 +42,10 @@ initialize() {
     load_default_config
 
     [ -f "${SETTINGS_PATH}" ] && source "${SETTINGS_PATH}"
-    ! [ -d "${FILE_DIR}" ] && mkdir -pv "${FILE_DIR}"
+    ! [ -d "${FILE_DIR}" ]    && mkdir -p "${FILE_DIR}/.removed/"
+
+    # delete screenshots older than 3 hours
+    find "${FILE_DIR}/.removed/" -type f -mmin +180 -delete
 }
 
 load_default_config() {
@@ -135,7 +138,6 @@ handle_file() {
         cd "${FILE_DIR}" || exit 1
 
         if [[ ${CLEAR_FILE_DIR} == "true" ]]; then
-            mkdir -p .removed
             UNDO_LAST_DELETION=".undo_last_deletion.sh"
             cat << EOF > "${UNDO_LAST_DELETION}"
 #! /bin/bash
