@@ -32,7 +32,7 @@
 #    7. xclip
 #    8. oniguruma
 #    9. jq
-#    10. zenity
+#    10. dialog
 #    11. flameshot
 
 initialize() {
@@ -41,6 +41,7 @@ initialize() {
 
     load_default_config
 
+    # shellcheck disable=SC1090
     [ -f "${SETTINGS_PATH}" ] && source "${SETTINGS_PATH}"
     ! [ -d "${FILE_DIR}" ]    && mkdir -p "${FILE_DIR}/.removed/"
 
@@ -230,16 +231,16 @@ upload_image() {
 }
 
 show_upload_result_message() {
-    TITLE="Imgur Screenshot"
     # shellcheck disable=SC2086
     if [ $1 -eq 0 ]; then
         MESS="Screenshot uploaded successfully. \
 Link copied to clipboard. \n${2}"
-        zenity --info --title="${TITLE}" --text="${MESS}"
     else
         MESS="Screenshot uploading ERROR!!!"
-        zenity --error --title="${TITLE}" --text="${MESS}"
     fi
+
+    "${HOME}/projects/git/system-config/home/myrequiem/bin/showMessage.sh" \
+        "${MESS}" nosound
 }
 
 handle_upload_success() {
