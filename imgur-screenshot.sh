@@ -239,8 +239,8 @@ Link copied to clipboard. \n${2}"
         MESS="Screenshot uploading ERROR!!!"
     fi
 
-    "${HOME}/projects/git/system-config/home/myrequiem/bin/showMessage.sh" \
-        "${MESS}" nosound
+    uxterm -geometry 50x10 \
+        -e "dialog --no-lines --msgbox \"${MESS}\" 7 40" 2>/dev/null
 }
 
 handle_upload_success() {
